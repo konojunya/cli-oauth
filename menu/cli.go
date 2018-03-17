@@ -25,5 +25,10 @@ func getCommands() []cli.Command {
 			Usage:  "Tweet with cli",
 			Action: action.Tweet,
 		},
+		{
+			Name:   "login",
+			Usage:  "Twitter login with OAuth",
+			Action: action.Login,
+		},
 	}
 }
