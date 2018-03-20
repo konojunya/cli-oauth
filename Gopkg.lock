@@ -8,16 +8,16 @@
   revision = "4cff9ef7b7003713efa191899dbaab8fa75e3e73"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/hydrogen18/stoppableListener"
-  packages = ["."]
-  revision = "827d760f0663fd2207d115e22dd1f55f1842467e"
-
-[[projects]]
   name = "github.com/joho/godotenv"
   packages = ["."]
   revision = "a79fa1e548e2c689c241d10173efd51e5d689d5b"
   version = "v1.2.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/skratchdot/open-golang"
+  packages = ["open"]
+  revision = "75fb7ed4208cf72d323d7d02fd1a5964a7a9073c"
 
 [[projects]]
   name = "github.com/urfave/cli"
@@ -34,6 +34,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a51ae87dfa4778d6ae00e3860a32873de741ab75f30e6a8a62e17cfd0f261a16"
+  inputs-digest = "bb9e6d14334c1c1a46b1fbdf1133c3f6f5b483a5ef7b6bf8e3966a80a4960250"
   solver-name = "gps-cdcl"
   solver-version = 1

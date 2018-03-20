@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/skratchdot/open-golang/open"
+
 	"github.com/konojunya/cli-oauth/auth"
 	"github.com/konojunya/cli-oauth/twitter"
 )
@@ -67,6 +69,7 @@ func Listen() {
 	http.HandleFunc("/", loginHandler)
 	http.HandleFunc("/oauth", callbackHandler)
 	go func() {
+		open.Run("http://" + addr)
 		log.Println("listen and serve http://" + addr)
 		if err := http.ListenAndServe(addr, nil); err != nil {
 			log.Fatal(err)
