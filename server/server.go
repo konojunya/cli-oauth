@@ -3,6 +3,7 @@ package server
 import (
 	"html/template"
 	"log"
+	"net"
 	"net/http"
 	"time"
 
@@ -10,11 +11,23 @@ import (
 	"github.com/konojunya/cli-oauth/twitter"
 )
 
-var closeCh = make(chan bool, 1)
+var (
+	closeCh = make(chan bool, 1)
+	addr    string
+)
+
+func init() {
+	l, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		log.Fatal(err)
+	}
+	addr = l.Addr().String()
+	l.Close()
+}
 
 func getRedirectURL() string {
 	config := auth.GetOauthClient()
-	rt, err := config.RequestTemporaryCredentials(nil, "http://127.0.0.1:3000/oauth", nil)
+	rt, err := config.RequestTemporaryCredentials(nil, "http://"+addr+"/oauth", nil)
 	if err != nil {
 		panic(err)
 	}
@@ -50,12 +63,12 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func Listen() {
-	srv := &http.Server{Addr: ":3000"}
+	srv := http.Server{Addr: addr}
 	http.HandleFunc("/", loginHandler)
 	http.HandleFunc("/oauth", callbackHandler)
 	go func() {
-		log.Println("listen and serve http://localhost:3000")
-		if err := srv.ListenAndServe(); err != nil {
+		log.Println("listen and serve http://" + addr)
+		if err := http.ListenAndServe(addr, nil); err != nil {
 			log.Fatal(err)
 		}
 	}()

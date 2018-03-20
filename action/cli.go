@@ -26,7 +26,7 @@ func Tweet(c *cli.Context) {
 		return
 	}
 	loadToken()
-	err := twitter.Tweet("cliでOAuth認証をしてツイートするテストだにょ〜〜ん")
+	err := twitter.Tweet("portを自由に変えれるのかテスト")
 	if err != nil {
 		log.Fatal(err)
 	}
