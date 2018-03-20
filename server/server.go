@@ -14,8 +14,8 @@ import (
 )
 
 var (
-	closeCh = make(chan bool, 1)
-	addr    string
+	closeCh  = make(chan bool, 1)
+	listener net.Listener
 )
 
 func init() {
@@ -23,13 +23,12 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	addr = l.Addr().String()
-	l.Close()
+	listener = l
 }
 
 func getRedirectURL() string {
 	config := auth.GetOauthClient()
-	rt, err := config.RequestTemporaryCredentials(nil, "http://"+addr+"/oauth", nil)
+	rt, err := config.RequestTemporaryCredentials(nil, "http://"+listener.Addr().String()+"/oauth", nil)
 	if err != nil {
 		panic(err)
 	}
@@ -65,13 +64,12 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func Listen() {
-	srv := http.Server{Addr: addr}
 	http.HandleFunc("/", loginHandler)
 	http.HandleFunc("/oauth", callbackHandler)
 	go func() {
-		open.Run("http://" + addr)
-		log.Println("listen and serve http://" + addr)
-		if err := http.ListenAndServe(addr, nil); err != nil {
+		open.Run("http://" + listener.Addr().String())
+		log.Println("listen and serve http://" + listener.Addr().String())
+		if err := http.Serve(listener, nil); err != nil {
 			log.Fatal(err)
 		}
 	}()
@@ -79,8 +77,8 @@ func Listen() {
 	stop := <-closeCh
 	if stop {
 		close(closeCh)
-		time.Sleep(time.Second * 5)
-		if err := srv.Shutdown(nil); err != nil {
+		time.Sleep(time.Second * 3)
+		if err := listener.Close(); err != nil {
 			log.Print(err)
 		}
 	}
