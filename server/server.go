@@ -75,9 +75,7 @@ func Listen() {
 		}
 	}()
 
-	stop := <-closeCh
-	if stop {
-		close(closeCh)
+	if <-closeCh {
 		time.Sleep(time.Second * 3)
 		if err := listener.Close(); err != nil {
 			log.Print(err)
