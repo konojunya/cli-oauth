@@ -18,14 +18,6 @@ var (
 	listener net.Listener
 )
 
-func init() {
-	l, err := net.Listen("tcp", "127.0.0.1:0")
-	if err != nil {
-		log.Fatal(err)
-	}
-	listener = l
-}
-
 func getRedirectURL() string {
 	config := auth.GetOauthClient()
 	rt, err := config.RequestTemporaryCredentials(nil, "http://"+listener.Addr().String()+"/oauth", nil)
@@ -63,7 +55,16 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func tcpListen() {
+	l, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		log.Fatal(err)
+	}
+	listener = l
+}
+
 func Listen() {
+	tcpListen()
 	http.HandleFunc("/", loginHandler)
 	http.HandleFunc("/oauth", callbackHandler)
 	go func() {
