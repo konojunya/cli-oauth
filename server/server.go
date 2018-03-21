@@ -55,16 +55,13 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func tcpListen() {
+func Listen() {
 	l, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		log.Fatal(err)
 	}
 	listener = l
-}
 
-func Listen() {
-	tcpListen()
 	http.HandleFunc("/", loginHandler)
 	http.HandleFunc("/oauth", callbackHandler)
 	go func() {
